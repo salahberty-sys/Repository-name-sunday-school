@@ -121,6 +121,50 @@ header,#segs,#race,#board{position:relative;z-index:1}
 .adates{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 .adates input{width:auto;flex:1;min-width:150px;text-align:center}
 @media (prefers-reduced-motion:reduce){.seg.on,.av,.kid.r1,.bgf{animation:none}}
+
+#carols{display:none;position:relative;z-index:1;margin:0 16px 14px;padding:14px;border-radius:18px;background:#ffffff14}
+#carols.show{display:block}
+#carols h3{margin:0 0 10px;font-size:clamp(17px,4.6vw,21px)}
+#carols .cl{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+#carols .cl button{font:inherit;font-weight:700;padding:8px 14px;border-radius:30px;border:0;background:#ffffff22;color:inherit;cursor:pointer}
+#carols .cl button.on{background:var(--mint);color:#0d3b2c}
+#carols .vw{position:relative;width:100%;max-width:640px;aspect-ratio:16/9;margin:auto;border-radius:12px;overflow:hidden;background:#000}
+#carols iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
+#carols .yl{display:block;text-align:center;margin-top:8px;color:inherit;opacity:.8;font-size:14px}
+#games{display:none;position:relative;z-index:1;margin:0 16px 14px;padding:14px;border-radius:18px;background:#ffffff14}
+#games.show{display:block}
+#games h3{margin:0 0 10px;font-size:clamp(17px,4.6vw,21px)}
+#gmenu{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:12px}
+#gmenu button,.gbtn{font:inherit;font-weight:700;padding:8px 14px;border-radius:30px;border:0;background:#ffffff22;color:inherit;cursor:pointer}
+#gmenu button.on{background:var(--mint);color:#0d3b2c}
+.gbtn{background:var(--mint);color:#0d3b2c;margin:4px}
+#garea{text-align:center}
+.gmsg{font-weight:700;margin:8px 0;min-height:1.6em;font-size:clamp(15px,4vw,18px)}
+.dice{font-size:44px;line-height:1}
+.pl{display:inline-block;padding:2px 10px;border-radius:20px;margin:2px;font-weight:700;color:#111}
+.sl{display:grid;grid-template-columns:repeat(10,1fr);width:min(100%,460px);margin:auto;border-radius:10px;overflow:hidden}
+.sl div{aspect-ratio:1;font-size:clamp(8px,2.4vw,12px);background:#ffffff22;border:1px solid #0003;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#fff}
+.sl div:nth-child(odd){background:#ffffff33}
+.sl .lad{background:#2fd39b88!important}.sl .snk{background:#ff5b6e88!important}
+.sl .tk{font-size:clamp(10px,3vw,16px);line-height:1}
+.lg{position:relative;display:grid;grid-template-columns:repeat(15,1fr);width:min(100%,480px);margin:auto;border-radius:10px;overflow:hidden;background:#fff2}
+.lg div{aspect-ratio:1;position:relative;display:flex;align-items:center;justify-content:center;font-size:clamp(7px,2vw,12px)}
+.lg .pc{background:#fff;border:1px solid #0002}
+.lg .tkn{position:absolute;inset:12%;border-radius:50%;border:2px solid #fff;cursor:default;display:flex;align-items:center;justify-content:center;font-size:clamp(7px,2.2vw,12px);color:#fff;font-weight:700}
+.lg .tkn.can{cursor:pointer;animation:pulse 1s infinite;box-shadow:0 0 0 3px #ffd54a}
+.mg{display:grid;grid-template-columns:repeat(4,1fr);gap:8px;width:min(100%,360px);margin:auto}
+.mg button{aspect-ratio:1;font-size:clamp(24px,8vw,40px);border:0;border-radius:12px;background:#ffffff33;cursor:pointer;color:inherit}
+.mg button.up{background:#fff}
+.sd{display:flex;flex-wrap:wrap;gap:14px;justify-content:center}
+.sdg{display:grid;grid-template-columns:repeat(5,1fr);gap:2px;background:#fff;padding:6px;border-radius:10px}
+.sdg button{font-size:clamp(22px,7vw,34px);border:0;background:#fff;padding:2px;border-radius:8px;cursor:pointer}
+.sdg button.ok{background:#2fd39b}
+.xo{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;width:min(100%,260px);margin:auto}
+.xo button{aspect-ratio:1;font-size:clamp(30px,10vw,52px);border:0;border-radius:12px;background:#ffffff33;color:inherit;cursor:pointer}
+#lk{display:none;position:relative;z-index:1;margin:0 16px 14px;padding:14px;border-radius:18px;background:#ffffff14}
+#lk.show{display:block}#lk h3{margin:0 0 10px;font-size:clamp(17px,4.6vw,21px)}
+#lk a{display:inline-block;margin:4px;padding:9px 14px;border-radius:30px;background:#ffffff22;color:inherit;text-decoration:none;font-weight:700}
+#lk small{display:block;opacity:.75;margin-top:6px}
 </style>
 </head>
 <body>
@@ -141,6 +185,9 @@ header,#segs,#race,#board{position:relative;z-index:1}
   </div>
 </header>
 <div id="segs"></div>
+<section id="carols"><h3>🎶 ترانيم أطفال</h3><div class="cl" id="cl"></div><div class="vw" id="vw"></div><a class="yl" id="yl" target="_blank" rel="noopener">افتح على يوتيوب ↗</a></section>
+<section id="games"><h3>🎲 ألعاب للأطفال</h3><div id="gmenu"></div><div id="garea"></div></section>
+<section id="lk"><h3 id="lkh"></h3><div id="lkb"></div><small id="lks"></small></section>
 <div id="race"></div>
 <main id="board"></main>
 <div id="splash"></div>
@@ -282,6 +329,178 @@ function addPts(id,d,btn){
 }
 
 /* ---------- render ---------- */
+
+const CAROLS=[['عقيدة كنيستنا القبطية','XTFnVoLOaqo'],['عقيدة قبطية أرثوذكسية','wCTyM1rXo80'],['هو إلهنا','WXRYs8iIpTo'],['عقيدة قبطية (ترانيم توون)','rZOHL2v3Qjg']];
+let carolSel=-1;
+function showCarol(i){
+  carolSel=i;const c=CAROLS[i];
+  $('vw').innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/'+c[1]+'?rel=0" title="'+c[0]+'" allow="accelerometer; autoplay; encrypted-media; picture-in-picture" allowfullscreen referrerpolicy="strict-origin-when-cross-origin"></iframe>';
+  $('yl').href='https://www.youtube.com/watch?v='+c[1];
+  document.querySelectorAll('#cl button').forEach((b,j)=>b.classList.toggle('on',j===i));
+}
+function updateCarols(){
+  const show=S.segs[S.cur]==='ترانيم';
+  $('carols').classList.toggle('show',show);
+  if(show&&!$('cl').children.length){CAROLS.forEach((c,i)=>{const b=document.createElement('button');b.textContent='▶ '+c[0];b.onclick=()=>showCarol(i);$('cl').appendChild(b)});showCarol(0)}
+  if(!show){$('vw').innerHTML='';$('cl').innerHTML='';}
+}
+const GM={cur:null,timers:[]};
+const GAMES=[['sl','🐍 السلم والتعبان'],['ludo','🎲 لودو'],['sd','🔍 الاختلافات'],['mem','🧠 الذاكرة'],['xo','❌⭕ إكس أو']];
+const PCOL=['#e53935','#43a047','#fdd835','#1e88e5'],PNAM=['الأحمر','الأخضر','الأصفر','الأزرق'];
+const gA=()=>$('garea');
+function gClear(){GM.timers.forEach(clearTimeout);GM.timers=[]}
+function gLater(f,ms){GM.timers.push(setTimeout(f,ms))}
+function pickPlayers(cb){
+  gA().innerHTML='<div class="gmsg">كام لاعب؟</div>';
+  [2,3,4].forEach(n=>{const b=document.createElement('button');b.className='gbtn';b.textContent=n+' لاعبين';b.onclick=()=>cb(n);gA().appendChild(b)});
+}
+function openGame(id){
+  gClear();GM.cur=id;
+  document.querySelectorAll('#gmenu button').forEach((b,i)=>b.classList.toggle('on',GAMES[i][0]===id));
+  ({sl:startSL,ludo:startLudo,sd:startSD,mem:startMem,xo:startXO})[id]();
+}
+function updateGames(){
+  const t=S.segs[S.cur];const show=(t==='ألعاب'||t==='لعبة');
+  $('games').classList.toggle('show',show);
+  if(show&&!$('gmenu').children.length){GAMES.forEach(g=>{const b=document.createElement('button');b.textContent=g[1];b.onclick=()=>openGame(g[0]);$('gmenu').appendChild(b)});gA().innerHTML='<div class="gmsg">اختار لعبة من فوق 👆</div>'}
+  if(!show){gClear();GM.cur=null;$('gmenu').innerHTML='';gA().innerHTML=''}
+}
+/* ---- snakes & ladders ---- */
+const SLJ={4:25,13:46,27:5,33:49,40:3,42:63,43:18,50:69,54:31,62:81,66:45,74:92,76:58,89:53,99:41,95:75};
+function startSL(){pickPlayers(n=>{
+  const P=Array.from({length:n},()=>({p:0}));let t=0,busy=false,over=false;
+  gA().innerHTML='<div id="slp"></div><div class="gmsg" id="slm"></div><div class="dice" id="sld">🎲</div><button class="gbtn" id="slr"></button><div class="sl" id="slb"></div>';
+  const cells=[];for(let r=9;r>=0;r--)for(let c=0;c<10;c++){const row=9-r;const col=(row%2===0)?c:9-c;cells.push(row*10+col+1)}
+  // visual rows: top row is 100..91 (row9), built so first printed = row 9
+  const order=[];for(let r=9;r>=0;r--){for(let c=0;c<10;c++){order.push(r%2===0?r*10+c+1:r*10+(9-c)+1)}}
+  function draw(){
+    const b=$('slb');b.innerHTML='';
+    order.forEach(n0=>{const d=document.createElement('div');let s=String(n0);
+      if(SLJ[n0]){d.className=SLJ[n0]>n0?'lad':'snk';s+=(SLJ[n0]>n0?' 🪜':' 🐍')+SLJ[n0]}
+      d.textContent=s;
+      const tk=document.createElement('span');tk.className='tk';tk.textContent=P.map((q,i)=>q.p===n0?['🔴','🟢','🟡','🔵'][i]:'').join('');d.appendChild(tk);b.appendChild(d)});
+    $('slp').innerHTML=P.map((q,i)=>'<span class="pl" style="background:'+PCOL[i]+'">'+PNAM[i]+' '+q.p+'</span>').join('');
+    $('slr').textContent=over?'🔄 لعبة جديدة':'🎲 ارمي الزهر ('+PNAM[t]+')';
+  }
+  $('slr').onclick=()=>{
+    if(over){startSL();return}
+    if(busy)return;busy=true;
+    const d=1+Math.floor(Math.random()*6);$('sld').textContent=['⚀','⚁','⚂','⚃','⚄','⚅'][d-1];
+    let m=PNAM[t]+' رمى '+d;
+    if(P[t].p+d<=100)P[t].p+=d;else m+=' (محتاج رقم أصغر)';
+    if(SLJ[P[t].p]){m+=SLJ[P[t].p]>P[t].p?' وطلع السلم 🪜':' ونزل التعبان 🐍';P[t].p=SLJ[P[t].p]}
+    $('slm').textContent=m;
+    if(P[t].p===100){over=true;$('slm').textContent='🎉 '+PNAM[t]+' كسب!';draw();busy=false;return}
+    if(d!==6)t=(t+1)%n;else $('slm').textContent=m+' — دور تاني!';
+    draw();busy=false;
+  };
+  draw();
+})}
+/* ---- ludo ---- */
+const LP=[[1,6],[2,6],[3,6],[4,6],[5,6],[6,5],[6,4],[6,3],[6,2],[6,1],[6,0],[7,0],[8,0],[8,1],[8,2],[8,3],[8,4],[8,5],[9,6],[10,6],[11,6],[12,6],[13,6],[14,6],[14,7],[14,8],[13,8],[12,8],[11,8],[10,8],[9,8],[8,9],[8,10],[8,11],[8,12],[8,13],[8,14],[7,14],[6,14],[6,13],[6,12],[6,11],[6,10],[6,9],[5,8],[4,8],[3,8],[2,8],[1,8],[0,8],[0,7],[0,6]];
+const LSTART=[0,13,26,39];
+const LCOL=[[[1,7],[2,7],[3,7],[4,7],[5,7]],[[7,1],[7,2],[7,3],[7,4],[7,5]],[[13,7],[12,7],[11,7],[10,7],[9,7]],[[7,13],[7,12],[7,11],[7,10],[7,9]]];
+const LBASE=[[[1.5,1.5],[3.5,1.5],[1.5,3.5],[3.5,3.5]],[[10.5,1.5],[12.5,1.5],[10.5,3.5],[12.5,3.5]],[[10.5,10.5],[12.5,10.5],[10.5,12.5],[12.5,12.5]],[[1.5,10.5],[3.5,10.5],[1.5,12.5],[3.5,12.5]]];
+/* base-order: players 0=red(top-left) 1=green(top-right) 2=yellow(bottom-right) 3=blue(bottom-left) matches track direction */
+function lXY(pl,tk){const p=tk.p;if(p<0)return LBASE[pl][tk.i];if(p<=50)return LP[(LSTART[pl]+p)%52];if(p<=55)return LCOL[pl][p-51];return [7,7]}
+function startLudo(){pickPlayers(n=>{
+  const pls=[0,1,2,3].slice(0,n);
+  const T=pls.map(pl=>({pl,tk:[0,1,2,3].map(i=>({i,p:-1}))}));
+  let t=0,die=0,rolled=false,over=false;
+  gA().innerHTML='<div id="lp"></div><div class="gmsg" id="lm"></div><div class="dice" id="ld">🎲</div><button class="gbtn" id="lr"></button><div class="lg" id="lb"></div>';
+  const lb=$('lb');const cell={};
+  for(let r=0;r<15;r++)for(let c=0;c<15;c++){const d=document.createElement('div');d.style.position='relative';lb.appendChild(d);cell[c+','+r]=d}
+  // static colouring
+  [[0,0,6,6,0],[9,0,6,6,1],[9,9,6,6,2],[0,9,6,6,3]].forEach(([x,y,w,h,k])=>{for(let r=y;r<y+h;r++)for(let c=x;c<x+w;c++)cell[c+','+r].style.background=PCOL[k]+'55'});
+  LP.forEach(([c,r],i)=>{const d=cell[c+','+r];d.classList.add('pc');if(LSTART.includes(i)){d.style.background=PCOL[LSTART.indexOf(i)]+'aa'}});
+  LCOL.forEach((a,k)=>a.forEach(([c,r])=>{const d=cell[c+','+r];d.classList.add('pc');d.style.background=PCOL[k]}));
+  cell['7,7'].textContent='🏠';
+  function legal(tk,d){if(tk.p<0)return d===6;return tk.p+d<=56}
+  function canAny(d){return T[t].tk.some(k=>legal(k,d))}
+  function draw(){
+    document.querySelectorAll('#lb .tkn').forEach(e=>e.remove());
+    const here={};
+    T.forEach((q,qi)=>q.tk.forEach(k=>{const [c,r]=lXY(q.pl,k);const key=c+','+r;
+      const host=cell[Math.floor(c)+','+Math.floor(r)];
+      const e=document.createElement('span');e.className='tkn';e.style.background=PCOL[q.pl];e.textContent=k.i+1;
+      if(qi===t&&rolled&&!over&&legal(k,die)){e.classList.add('can');e.onclick=()=>move(k)}
+      const n=(here[key]=(here[key]||0)+1);if(n>1){e.style.inset=(12+(n-1)*10)+'%'}
+      host.appendChild(e)}));
+    $('lp').innerHTML=T.map((q,i)=>'<span class="pl" style="background:'+PCOL[q.pl]+(i===t&&!over?';outline:3px solid #fff':'')+'">'+PNAM[q.pl]+' 🏠'+q.tk.filter(k=>k.p===56).length+'/4</span>').join('');
+    $('lr').textContent=over?'🔄 لعبة جديدة':(rolled?'اختار قطعة مضيئة':'🎲 ارمي الزهر ('+PNAM[T[t].pl]+')');
+  }
+  function next(extra){rolled=false;if(!extra)t=(t+1)%n;draw()}
+  function move(k){
+    if(!rolled||over)return;
+    if(k.p<0)k.p=0;else k.p+=die;
+    let m='';
+    if(k.p<=50){const abs=(LSTART[T[t].pl]+k.p)%52;
+      if(!LSTART.includes(abs)){T.forEach((q,qi)=>{if(qi!==t)q.tk.forEach(o=>{if(o.p>=0&&o.p<=50&&(LSTART[q.pl]+o.p)%52===abs){o.p=-1;m=' 💥 رجّع قطعة للبيت'}})})}}
+    if(T[t].tk.every(x=>x.p===56)){over=true;$('lm').textContent='🎉 '+PNAM[T[t].pl]+' كسب!';draw();return}
+    $('lm').textContent=m;
+    next(die===6);
+  }
+  $('lr').onclick=()=>{
+    if(over){startLudo();return}
+    if(rolled)return;
+    die=1+Math.floor(Math.random()*6);$('ld').textContent=['⚀','⚁','⚂','⚃','⚄','⚅'][die-1];rolled=true;
+    if(!canAny(die)){$('lm').textContent=PNAM[T[t].pl]+' رمى '+die+' — مفيش حركة';rolled=false;draw();gLater(()=>next(false),900);return}
+    const ok=T[t].tk.filter(k=>legal(k,die));
+    $('lm').textContent=PNAM[T[t].pl]+' رمى '+die;
+    draw();
+  };
+  draw();
+})}
+/* ---- spot the difference ---- */
+const SDE=['🐶','🐱','🐸','🦁','🐼','🐵','🐰','🦊','🐯','🐷','🐮','🐧','🐢','🦋','🐞','🐝','🌳','🌼','⭐','🍎','🚗','⚽','🎈','🏠'];
+function startSD(){
+  const N=20,K=4;const a=[];for(let i=0;i<N;i++)a.push(SDE[Math.floor(Math.random()*SDE.length)]);
+  const b=[...a];const idx=[...Array(N).keys()].sort(()=>Math.random()-.5).slice(0,K);
+  idx.forEach(i=>{let x;do{x=SDE[Math.floor(Math.random()*SDE.length)]}while(x===a[i]);b[i]=x});
+  let found=0;
+  gA().innerHTML='<div class="gmsg" id="sdm"></div><div class="sd"><div class="sdg" id="sda"></div><div class="sdg" id="sdb"></div></div><button class="gbtn" id="sdn">🔄 صورة جديدة</button>';
+  const msg=()=>{$('sdm').textContent=found===K?'🎉 برافو! لقيت كل الاختلافات':'لاقي '+found+' من '+K+' — دوس على الاختلاف في أي صورة'};
+  [['sda',a],['sdb',b]].forEach(([id,arr])=>arr.forEach((e,i)=>{const bt=document.createElement('button');bt.textContent=e;
+    bt.onclick=()=>{if(!idx.includes(i)||bt.classList.contains('ok'))return;found++;[...$('sda').children,...$('sdb').children].forEach((x,j)=>{if(j%N===i)x.classList.add('ok')});msg()};
+    $(id).appendChild(bt)}));
+  $('sdn').onclick=startSD;msg();
+}
+/* ---- memory ---- */
+function startMem(){
+  const E=['🐶','🐱','🐸','🦁','🐼','🐰','🦊','🐢'];const D=[...E,...E].sort(()=>Math.random()-.5);
+  let open=[],lock=false,pairs=0,moves=0;
+  gA().innerHTML='<div class="gmsg" id="mm"></div><div class="mg" id="mg"></div><button class="gbtn" id="mn">🔄 لعبة جديدة</button>';
+  const msg=()=>{$('mm').textContent=pairs===8?'🎉 برافو! خلصت في '+moves+' محاولة':'محاولات: '+moves};
+  D.forEach(e=>{const b=document.createElement('button');b.textContent='❓';
+    b.onclick=()=>{if(lock||b.classList.contains('up'))return;b.classList.add('up');b.textContent=e;open.push([b,e]);
+      if(open.length===2){moves++;lock=true;const [x,y]=open;
+        if(x[1]===y[1]){pairs++;open=[];lock=false;msg()}
+        else gLater(()=>{x[0].classList.remove('up');x[0].textContent='❓';y[0].classList.remove('up');y[0].textContent='❓';open=[];lock=false;msg()},800)}};
+    $('mg').appendChild(b)});
+  $('mn').onclick=startMem;msg();
+}
+/* ---- tic tac toe ---- */
+function startXO(){
+  let B=Array(9).fill(''),turn='❌',done=false;
+  gA().innerHTML='<div class="gmsg" id="xm"></div><div class="xo" id="xb"></div><button class="gbtn" id="xn">🔄 لعبة جديدة</button>';
+  const W=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+  const draw=()=>{const x=$('xb');x.innerHTML='';B.forEach((v,i)=>{const b=document.createElement('button');b.textContent=v;b.onclick=()=>{if(done||B[i])return;B[i]=turn;
+    if(W.some(w=>w.every(j=>B[j]===turn))){done=true;$('xm').textContent='🎉 '+turn+' كسب!'}
+    else if(B.every(Boolean)){done=true;$('xm').textContent='تعادل 🤝'}
+    else{turn=turn==='❌'?'⭕':'❌';$('xm').textContent='الدور على '+turn}
+    draw()};x.appendChild(b)})};
+  $('xm').textContent='الدور على ❌';$('xn').onclick=startXO;draw();
+}
+
+
+const LK={'صلاة':['🙏 الأجبية (كتاب السبع صلوات)',[['كل الأجبية','https://st-takla.org/Agpeya_.html'],['باكر','https://st-takla.org/Agpeya/Agbeya_01_Prime_.html'],['الساعة الثالثة','https://st-takla.org/Agpeya/Agbeya_03_Terce_.html'],['الساعة السادسة','https://st-takla.org/Agpeya/Agbeya_06_Sext_.html'],['الساعة التاسعة','https://st-takla.org/Agpeya/Agbeya_09_None_.html'],['الغروب','https://st-takla.org/Agpeya/Agbeya_11_Vespers_.html'],['النوم','https://st-takla.org/Agpeya/Agbeya_12_Compline_.html'],['نصف الليل','https://st-takla.org/Agpeya/Agbeya_Midnight_.html']],'المصدر: موقع الأنبا تكلاهيمانوت (St-Takla.org). بيفتح في صفحة جديدة.'],
+'الدرس':['📖 الكتاب المقدس (ترجمة فاندايك)',[['العهد القديم','https://www.alinjil.com/arabic-bible/ot.html'],['العهد الجديد','https://www.alinjil.com/arabic-bible/nt.html'],['سفر الخروج (خيمة الاجتماع)','https://www.alinjil.com/arabic-bible/exodus/index.html'],['الكتاب كله (eBible)','https://ebible.org/arb-vd/']],'المصادر: alinjil.com و ebible.org. بيفتح في صفحة جديدة.']};
+function updateLinks(){
+  const x=LK[S.segs[S.cur]];$('lk').classList.toggle('show',!!x);
+  if(!x){$('lkb').innerHTML='';return}
+  $('lkh').textContent=x[0];$('lks').textContent=x[2];$('lkb').innerHTML='';
+  x[1].forEach(([t,u])=>{const a=document.createElement('a');a.textContent=t;a.href=u;a.target='_blank';a.rel='noopener';$('lkb').appendChild(a)});
+}
 function renderSegs(){
   $('segs').innerHTML='';
   S.segs.forEach((t,i)=>{
@@ -290,7 +509,7 @@ function renderSegs(){
     d.children[0].textContent=em(t);d.children[1].textContent=t;
     $('segs').appendChild(d);
   });
-  const on=$('segs').querySelector('.on');if(on)on.scrollIntoView({inline:'center',block:'nearest'});
+  const on=$('segs').querySelector('.on');if(on)on.scrollIntoView({inline:'center',block:'nearest'});updateCarols();updateGames();updateLinks();
 }
 function render(hot){
   const old={};document.querySelectorAll('.kid').forEach(e=>old[e.dataset.id]=e.getBoundingClientRect());
