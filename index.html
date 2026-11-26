@@ -506,7 +506,7 @@ function renderSegs(){
   S.segs.forEach((t,i)=>{
     const d=document.createElement('div');d.className='seg'+(i===S.cur?' on':i<S.cur?' done':'');
     d.innerHTML='<span class="em"></span><span></span>';
-    d.children[0].textContent=em(t);d.children[1].textContent=t;
+    d.children[0].textContent=em(t);d.children[1].textContent=t;d.style.cursor='pointer';d.setAttribute('role','button');d.tabIndex=0;const go=()=>{S.cur=i;save();renderSegs();sfx.next();splash(em(t),t)};d.onclick=go;d.onkeydown=e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();go()}};
     $('segs').appendChild(d);
   });
   const on=$('segs').querySelector('.on');if(on)on.scrollIntoView({inline:'center',block:'nearest'});updateCarols();updateGames();updateLinks();
