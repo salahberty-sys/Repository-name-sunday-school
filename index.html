@@ -168,6 +168,16 @@ header,#segs,#race,#board{position:relative;z-index:1}
 </style>
 </head>
 <body>
+<div id="lock" style="position:fixed;inset:0;z-index:99999;background:linear-gradient(160deg,#5b3cc4,#2a9d8f);display:flex;align-items:center;justify-content:center;font-family:inherit;direction:rtl">
+<form id="lform" style="background:#fff;border-radius:22px;padding:26px 22px;width:min(88vw,340px);text-align:center;box-shadow:0 10px 40px #0005">
+<div style="font-size:46px">🔔</div><h2 style="margin:6px 0 4px">مدارس الأحد</h2>
+<p style="margin:0 0 14px;color:#555;font-size:15px">للخدام والمدرسين بس. اكتب كلمة السر</p>
+<input id="lpw" type="password" autocomplete="current-password" placeholder="كلمة السر" style="width:100%;box-sizing:border-box;padding:12px;font-size:18px;border:2px solid #ccc;border-radius:12px;text-align:center">
+<button id="lgo" type="submit" style="margin-top:12px;width:100%;padding:12px;font-size:18px;border:0;border-radius:12px;background:#5b3cc4;color:#fff;font-weight:700">دخول</button>
+<div id="lmsg" style="min-height:22px;margin-top:10px;color:#c0392b;font-size:15px"></div>
+</form></div>
+<button id="lout" style="display:none;position:fixed;bottom:8px;left:8px;z-index:9000;opacity:.7;border:0;border-radius:14px;padding:6px 10px;font-size:13px;background:#eee">🔒 خروج</button>
+
 <div id="toast"></div>
 <header>
   <h1>🌟 فصل الانبا كاراس- سنة خامسة</h1>
@@ -264,7 +274,7 @@ const DEF=['صلاة','ترانيم','تمهيد','الدرس','ألعاب'];
 let S={segs:[...DEF],cur:0,kids:[],top:3,mute:false,hide:false};
 const K1='karas5.board.v1',K2='karas5.dir.v1';
 try{const j=JSON.parse(localStorage.getItem(K1)||'null');if(j&&j.segs)S=j;else{const o=JSON.parse(localStorage.getItem('ssd')||'null');if(o&&o.segs){S=o;localStorage.setItem(K1,JSON.stringify(S))}}}catch(e){}
-const save=()=>{try{localStorage.setItem(K1,JSON.stringify(S))}catch(e){}};
+const save=()=>{try{localStorage.setItem(K1,JSON.stringify(S))}catch(e){}window.__sync&&window.__sync('board')};
 const $=id=>document.getElementById(id);
 const em=t=>EM[t]||'⭐';
 const uid=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,6);
@@ -673,7 +683,7 @@ function sad(){
 /* ---------- children directory ---------- */
 let D=[];
 try{const j=JSON.parse(localStorage.getItem(K2)||'null');if(Array.isArray(j))D=j}catch(e){}
-const dsave=()=>{try{localStorage.setItem(K2,JSON.stringify(D))}catch(e){}};
+const dsave=()=>{try{localStorage.setItem(K2,JSON.stringify(D))}catch(e){}window.__sync&&window.__sync('dir')};
 const telHref=v=>String(v).replace(/[^\d+]/g,'');
 const fmtB=v=>{
   if(v==null||v==='')return '';
@@ -773,7 +783,7 @@ try{const j=JSON.parse(localStorage.getItem('karas5.att.v1')||'null');if(j&&type
 Object.keys(A).forEach(ds=>{const d=A[ds];if(d&&!Array.isArray(d.p)&&!Array.isArray(d.a))A[ds]={p:[],a:Object.keys(d).filter(k=>d[k])}});
 const ATT_MAX=15000;
 const attBytes=a=>{try{return new TextEncoder().encode(JSON.stringify(a)).length}catch(e){return JSON.stringify(a).length*2}};
-const asave=()=>{try{localStorage.setItem('karas5.att.v1',JSON.stringify(A))}catch(e){}};
+const asave=()=>{try{localStorage.setItem('karas5.att.v1',JSON.stringify(A))}catch(e){}window.__sync&&window.__sync('att')};
 const trySetAtt=a=>{if(attBytes(a)>ATT_MAX){toast('⚠️ مساحة الغياب مليانة. اعمل ⬇️ تصدير نسخة وبعدين امسح أيام قديمة');return false}A=a;asave();return true};
 const p2=n=>String(n).padStart(2,'0');
 const todayStr=()=>{const d=new Date();return d.getFullYear()+'-'+p2(d.getMonth()+1)+'-'+p2(d.getDate())};
@@ -912,5 +922,54 @@ $('dfile').onchange=async e=>{
 
 render();
 </script>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getFirestore,doc,setDoc,onSnapshot} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+const app=initializeApp({apiKey:"AIzaSyDIto97aye2oVfFUHezL_sqE5k_1P3ys2c",authDomain:"sunday-school-karas.firebaseapp.com",projectId:"sunday-school-karas",storageBucket:"sunday-school-karas.firebasestorage.app",messagingSenderId:"315344566219",appId:"1:315344566219:web:b86b5ec94bfacef102a84e"});
+const auth=getAuth(app),db=getFirestore(app);
+const EMAIL="teachers@sunday-school.local";
+const el=id=>document.getElementById(id);
+const KEYS={board:'karas5.board.v1',dir:'karas5.dir.v1',att:'karas5.att.v1'};
+const ref=n=>doc(db,'class',n);
+let unsubs=[],timers={},live=false;
+const localEmpty=n=>n==='board'?!(S.kids&&S.kids.length):n==='dir'?!D.length:!Object.keys(A).length;
+const pack=n=>n==='board'?{segs:S.segs,kids:S.kids,top:S.top}:n==='dir'?D:A;
+const payload=n=>({json:JSON.stringify(pack(n)),t:Date.now()});
+const push=n=>setDoc(ref(n),payload(n)).catch(()=>{});
+window.__sync=n=>{if(!live)return;clearTimeout(timers[n]);timers[n]=setTimeout(()=>push(n),700)};
+function apply(n,d){
+  try{if(!localStorage.getItem('karas5.prebackup')){localStorage.setItem('karas5.prebackup',JSON.stringify({b:localStorage.getItem(KEYS.board),d:localStorage.getItem(KEYS.dir),a:localStorage.getItem(KEYS.att)}))}}catch(e){}
+  const v=JSON.parse(d.json);
+  if(n==='board'){if(!v||!v.segs)return;const cur=Math.max(0,Math.min(S.cur||0,v.segs.length-1));S={segs:v.segs,kids:v.kids||[],top:v.top??3,cur:cur,mute:S.mute,hide:S.hide};try{localStorage.setItem(KEYS.board,JSON.stringify(S))}catch(e){}render()}
+  else if(n==='dir'){if(!Array.isArray(v))return;D=v;try{localStorage.setItem(KEYS.dir,JSON.stringify(D))}catch(e){}renderDir()}
+  else{if(!v||typeof v!=='object'||Array.isArray(v))return;A=v;try{localStorage.setItem(KEYS.att,JSON.stringify(A))}catch(e){}renderAtt()}
+}
+function start(){
+  live=true;
+  for(const n of ['board','dir','att']){
+    unsubs.push(onSnapshot(ref(n),snap=>{
+      if(snap.metadata.hasPendingWrites)return;
+      if(!snap.exists()){if(!localEmpty(n))push(n);return}
+      const d=snap.data();
+      if(d.json===JSON.stringify(pack(n)))return;
+      apply(n,d);
+    },()=>{}));
+  }
+}
+function stop(){live=false;unsubs.forEach(u=>u());unsubs=[]}
+onAuthStateChanged(auth,u=>{
+  if(u){el('lock').style.display='none';el('lout').style.display='block';start()}
+  else{stop();el('lock').style.display='flex';el('lout').style.display='none'}
+});
+el('lform').onsubmit=async e=>{
+  e.preventDefault();const b=el('lgo');b.disabled=true;el('lmsg').textContent='';
+  try{await signInWithEmailAndPassword(auth,EMAIL,el('lpw').value);el('lpw').value=''}
+  catch(err){el('lmsg').textContent=(err.code==='auth/network-request-failed')?'مفيش نت 📶':'كلمة السر غلط ❌'}
+  b.disabled=false;
+};
+el('lout').onclick=()=>signOut(auth);
+</script>
+
 </body>
 </html>
