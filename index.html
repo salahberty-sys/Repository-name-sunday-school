@@ -591,7 +591,7 @@ function renderSetup(){
 }
 
 /* ---------- events ---------- */
-$('setup').onclick=()=>{renderSetup();$('dlg').showModal()};
+$('setup').onclick=()=>{renderSetup();renderPick();$('dlg').showModal()};
 $('close').onclick=()=>$('dlg').close();
 $('addn').onclick=()=>{
   $('names').value.split(/[,،\n]+/).map(s=>s.trim()).filter(Boolean).forEach(n=>{
@@ -932,8 +932,7 @@ $('pwg').onclick=async()=>{
 function renderPick(){renderPick0();addClr()}
 function addClr(){
   const n=S.kids.filter(k=>D.some(d=>d.n===k.n)).length;
-  if(!n)return;
-  const b=document.createElement('button');b.className='tool';b.style.marginTop='8px';b.textContent='🗑️ مسح الأسماء المضافة من البيانات ('+n+')';
+  const b=document.createElement('button');b.className='tool';b.style.marginTop='8px';if(!n){b.disabled=true;b.style.opacity='.5'}b.textContent='🗑️ مسح الأسماء المضافة من البيانات ('+n+')';
   b.onclick=()=>twoTap(b,()=>{S.kids=S.kids.filter(k=>!D.some(d=>d.n===k.n));save();renderSetup();render();renderPick();toast('اتمسحت الأسماء من اللوحة 🗑️ (بيانات الأطفال زي ما هي)')});
   $('dirpick').appendChild(b);
 }
