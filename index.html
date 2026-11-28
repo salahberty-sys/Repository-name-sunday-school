@@ -922,7 +922,15 @@ $('pwg').onclick=async()=>{
   try{await window.__chpw(o,n);$('pwo').value='';$('pwn').value='';m.textContent='✅ اتغيرت. استخدم الجديدة من الأجهزة التانية';}
   catch(e){m.textContent=(e&&e.code==='auth/invalid-credential')||(e&&e.code==='auth/wrong-password')?'كلمة السر الحالية غلط ❌':'حصل خطأ، جرب تاني'}
 };
-function renderPick(){
+function renderPick(){renderPick0();addClr()}
+function addClr(){
+  const n=S.kids.filter(k=>D.some(d=>d.n===k.n)).length;
+  if(!n)return;
+  const b=document.createElement('button');b.className='tool';b.style.marginTop='8px';b.textContent='🗑️ مسح الأسماء المضافة من البيانات ('+n+')';
+  b.onclick=()=>twoTap(b,()=>{S.kids=S.kids.filter(k=>!D.some(d=>d.n===k.n));save();renderSetup();render();renderPick();toast('اتمسحت الأسماء من اللوحة 🗑️ (بيانات الأطفال زي ما هي)')});
+  $('dirpick').appendChild(b);
+}
+function renderPick0(){
   const box=$('dirpick');box.innerHTML='';
   const miss=D.filter(k=>!S.kids.some(x=>x.n===k.n));
   const h=document.createElement('div');h.style.cssText='font-size:14px;margin:6px 0;opacity:.85';
