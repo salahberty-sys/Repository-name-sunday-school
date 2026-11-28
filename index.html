@@ -874,7 +874,14 @@ function renderAtt(){
 }
 
 /* ---------- أسبوع جديد / ملخص الشهر / نسخة احتياطية ---------- */
-$('pweek').onclick=()=>twoTap($('pweek'),()=>{['g','r'].forEach(k=>P[k].forEach(i=>{delete i.d}));psave();renderPar();toast('بدأنا أسبوع جديد 🔄')});
+$('pweek').onclick=()=>{
+  const b=$('pweek');
+  if(b.dataset.armed){delete b.dataset.armed;b.textContent=b.dataset.orig;b.classList.remove('arm');
+    S.kids.forEach(k=>k.p=0);save();['g','r'].forEach(k=>P[k].forEach(i=>{delete i.d}));psave();render();renderPar();sfx.next();toast('بدأنا أسبوع جديد 🔄 النقط والعلامات اتصفّرت');return}
+  b.dataset.orig=b.textContent;b.dataset.armed='1';b.classList.add('arm');b.textContent='⚠️ هيصفّر نقط الأطفال وعلامات الفقرات. اضغط تاني للتأكيد';
+  toast('تنبيه: لو عايز نسخة احتياطية حمّلها الأول من ⚙️ الإعدادات');
+  setTimeout(()=>{if(b.dataset.armed){delete b.dataset.armed;b.textContent=b.dataset.orig;b.classList.remove('arm')}},5000);
+};
 let smon=todayStr().slice(0,7);
 const shiftMon=(m,n)=>{const d=new Date(m+'-15T12:00:00');d.setMonth(d.getMonth()+n);return d.getFullYear()+'-'+p2(d.getMonth()+1)};
 function renderSum(){
