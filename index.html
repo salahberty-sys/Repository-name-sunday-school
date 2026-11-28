@@ -94,6 +94,7 @@ header,#segs,#race,#board{position:relative;z-index:1}
 #dir h2{margin:0;color:var(--sun)}
 #par{position:fixed;inset:0;background:#0f0e33f5;z-index:60;display:none;flex-direction:column;padding:16px;gap:12px;overflow:auto}#par.show{display:flex}#par h2{margin:0;color:var(--sun)}.ptabs{display:flex;gap:8px}.ptabs .tool{flex:1;font-size:18px}.ptabs .tool.on{background:var(--sun);color:#2a2257}.pitem{display:flex;align-items:center;gap:8px;background:var(--card);color:var(--ink);border-radius:16px;padding:10px 12px;margin-bottom:8px}.pitem input[type=checkbox]{width:24px;height:24px;flex:none}.pitem .pt{flex:1;min-width:0;font-weight:900;font-size:18px;overflow-wrap:anywhere}.pitem.done .pt{text-decoration:line-through;opacity:.5}.pitem button{border:0;border-radius:10px;padding:6px 9px;font-size:16px;background:#0001}
 .rit{background:var(--card);color:var(--ink);border-radius:16px;padding:10px 12px;margin:8px 0}.rit summary{font-weight:900;font-size:18px;cursor:pointer}.rit input{width:100%;box-sizing:border-box;margin:8px 0;font-size:17px}.rit .ri{border-top:1px solid #0002;padding:8px 2px}.rit .ri b{color:#5b3cc4;font-size:17px}.rit .ri div{white-space:pre-line;font-size:16px;line-height:1.6}
+#asm{position:fixed;inset:0;z-index:70;background:#0f0e33fa;display:none;flex-direction:column;padding:16px;gap:10px;overflow:auto}#asm.show{display:flex}#asm h2{margin:0;color:var(--sun)}.srow{display:flex;align-items:center;gap:8px;background:var(--card);color:var(--ink);border-radius:14px;padding:9px 12px;flex-wrap:wrap}.srow .sn{flex:1;min-width:120px;font-weight:900}.srow .sc{font-weight:700;font-size:14px}.srow a.call{background:#2fd39b;color:#073;border-radius:10px;padding:6px 10px;text-decoration:none;font-weight:900;font-size:14px}.srow.hi{background:#ffe1dc}.bk{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0}.pw{display:none;margin:8px 0}.pw.show{display:block}.pw input{width:100%;box-sizing:border-box;margin:4px 0;font-size:16px}
 .dh{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
 #dsearch{font-size:18px}
 .dgh{color:var(--sun);font-weight:900;font-size:17px;margin:10px 2px 4px}
@@ -215,6 +216,11 @@ header,#segs,#race,#board{position:relative;z-index:1}
   <h2>فقرات اليوم</h2>
   <div id="seglist"></div>
   <div class="row"><input id="segname" placeholder="اسم فقرة جديدة (مثلا: لعبة)" style="flex:1"><button class="tool" id="adds">إضافة</button></div>
+  <h2>نسخة احتياطية</h2>
+  <div class="bk"><button class="tool" id="bkx">⬇️ تحميل نسخة بكل البيانات</button><label class="tool" for="bkf" style="margin:0">⬆️ استرجاع نسخة</label><input type="file" id="bkf" accept=".json" style="display:none"></div>
+  <h2>كلمة سر الدخول</h2>
+  <button class="tool" id="pwb">🔑 تغيير كلمة السر المشتركة</button>
+  <div class="pw" id="pwf"><input id="pwo" type="password" placeholder="كلمة السر الحالية" autocomplete="current-password"><input id="pwn" type="password" placeholder="كلمة السر الجديدة (6 حروف على الأقل)" autocomplete="new-password"><button class="tool go" id="pwg">حفظ</button> <span id="pwm" style="font-size:14px"></span></div>
   <h2>عدد الفائزين في الآخر</h2>
   <div class="row" id="topn"></div>
   <div class="row">
@@ -229,6 +235,7 @@ header,#segs,#race,#board{position:relative;z-index:1}
   <div class="dh"><h2 style="flex:1">📋 الفقرات</h2><button class="tool" id="parclose">رجوع</button></div>
   <div class="ptabs"><button class="tool on" id="ptg">📘 فقرة عامة</button><button class="tool" id="ptr">⛪ فقرة طقسية</button></div>
   <div class="row" style="margin:0"><input id="pnew" placeholder="فقرة جديدة" style="flex:1"><button class="tool go" id="padd">إضافة</button></div>
+  <div class="row" style="margin:0"><button class="tool" id="pweek">🔄 أسبوع جديد (يمسح العلامات)</button></div>
   <div id="plist" style="padding-bottom:20px"></div>
   <div class="dnote">كل فقرة تقدر تعلّمها خلصت، تعدّلها أو تمسحها. بتتحفظ وتظهر عند كل المدرسين 🔒</div>
 </section>
@@ -264,6 +271,7 @@ header,#segs,#race,#board{position:relative;z-index:1}
     <span id="asum"></span>
     <button class="tool go" id="aall">✅ كله حاضر</button>
     <button class="tool" id="acopy">📋 نسخ الملخص</button>
+    <button class="tool go" id="asumbtn">📊 ملخص الشهر</button>
     <button class="tool" id="aexp">⬇️ تصدير نسخة</button>
     <button class="tool" id="areset">🗑️ مسح غياب اليوم</button>
     <span id="ause" style="font-size:12px;opacity:.7"></span>
@@ -272,6 +280,11 @@ header,#segs,#race,#board{position:relative;z-index:1}
   <div class="dnote">الغياب بيتسجل على الجهاز ده بس حسب التاريخ، ومفيش تسجيل تلقائي — كل طفل بيتعلّم حاضر أو غايب بإيدك 🔒</div>
 </section>
 
+<section id="asm">
+  <div class="dh"><h2 style="flex:1">📊 ملخص الشهر</h2><button class="tool" id="asclose">رجوع</button></div>
+  <div class="adates"><button class="tool" id="asprev">◀</button><span id="asmon" style="font-weight:900;font-size:18px"></span><button class="tool" id="asnext">▶</button></div>
+  <div id="asl" style="padding-bottom:20px"></div>
+</section>
 <section id="win">
   <h1>🏆 أبطال النهاردة 🏆</h1>
   <div id="pod"></div>
@@ -855,6 +868,56 @@ function renderAtt(){
     l.appendChild(row);
   });
 }
+
+/* ---------- أسبوع جديد / ملخص الشهر / نسخة احتياطية ---------- */
+$('pweek').onclick=()=>twoTap($('pweek'),()=>{['g','r'].forEach(k=>P[k].forEach(i=>{delete i.d}));psave();renderPar();toast('بدأنا أسبوع جديد 🔄')});
+let smon=todayStr().slice(0,7);
+const shiftMon=(m,n)=>{const d=new Date(m+'-15T12:00:00');d.setMonth(d.getMonth()+n);return d.getFullYear()+'-'+p2(d.getMonth()+1)};
+function renderSum(){
+  let ml=smon;try{ml=new Date(smon+'-15T12:00:00').toLocaleDateString('ar-EG',{month:'long',year:'numeric'})}catch(e){}
+  $('asmon').textContent=ml;
+  const days=Object.keys(A).filter(d=>d.startsWith(smon));
+  const roster=attRoster().sort((a,b)=>a.n.localeCompare(b.n,'ar'));
+  const L=$('asl');L.innerHTML='';
+  if(!roster.length){L.innerHTML='<div class="empty" style="color:#fff">مفيش أطفال لسه</div>';return}
+  const info=document.createElement('div');info.style.cssText='color:#fff;opacity:.8;font-size:14px';info.textContent='عدد الأيام المسجلة في الشهر: '+days.length;L.appendChild(info);
+  const rows=roster.map(r=>{let p=0,a=0;days.forEach(d=>{const x=dayOf(d);if(x.p.includes(r.key))p++;if(x.a.includes(r.key))a++});return{r,p,a}}).sort((x,y)=>y.a-x.a);
+  rows.forEach(({r,p,a})=>{
+    const row=document.createElement('div');row.className='srow'+(a>=2?' hi':'');
+    const n=document.createElement('span');n.className='sn';n.textContent=r.n;
+    const c=document.createElement('span');c.className='sc';c.textContent='حاضر '+p+' • غايب '+a;
+    row.append(n,c);
+    const kid=D.find(k=>k.n===r.n&&(k.g||'')===(r.g||''))||D.find(k=>k.n===r.n);
+    if(kid&&a>0){[['الأم',kid.mom],['الأب',kid.dad]].forEach(([l,v])=>{if(!v)return;const b=document.createElement('a');b.className='call';b.href='tel:'+telHref(v);b.textContent='📞 '+l;row.appendChild(b)})}
+    L.appendChild(row);
+  });
+}
+$('asumbtn').onclick=()=>{smon=attDate.slice(0,7);renderSum();$('asm').classList.add('show')};
+$('asclose').onclick=()=>$('asm').classList.remove('show');
+$('asprev').onclick=()=>{smon=shiftMon(smon,-1);renderSum()};$('asnext').onclick=()=>{smon=shiftMon(smon,1);renderSum()};
+$('bkx').onclick=()=>{
+  const data={v:1,t:new Date().toISOString(),board:{segs:S.segs,kids:S.kids,top:S.top},dir:D,att:A,par:P};
+  const b=new Blob([JSON.stringify(data)],{type:'application/json'});const u=URL.createObjectURL(b);
+  const a=document.createElement('a');a.href=u;a.download='sunday-school-backup-'+todayStr()+'.json';document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(u),2000);
+  toast('اتحملت النسخة. احفظها في مكان آمن 🔒');
+};
+$('bkf').onchange=async e=>{
+  const f=e.target.files[0];e.target.value='';if(!f)return;
+  try{const j=JSON.parse(await f.text());
+    if(!j||!j.board||!Array.isArray(j.dir)||typeof j.att!=='object'||!j.par)throw 0;
+    if(!confirm('هيستبدل كل البيانات الحالية بالنسخة دي. متأكد؟'))return;
+    S={segs:j.board.segs||[...DEF],kids:j.board.kids||[],top:j.board.top??3,cur:0,mute:S.mute,hide:S.hide};D=j.dir;A=j.att;P=j.par;
+    save();dsave();asave();psave();render();renderDir();renderAtt();renderPar();toast('اتسترجعت النسخة ✅');
+  }catch(err){toast('الملف مش نسخة صحيحة ❌')}
+};
+$('pwb').onclick=()=>$('pwf').classList.toggle('show');
+$('pwg').onclick=async()=>{
+  const o=$('pwo').value,n=$('pwn').value,m=$('pwm');m.textContent='';
+  if(n.length<6){m.textContent='كلمة السر الجديدة قصيرة';return}
+  m.textContent='...';
+  try{await window.__chpw(o,n);$('pwo').value='';$('pwn').value='';m.textContent='✅ اتغيرت. استخدم الجديدة من الأجهزة التانية';}
+  catch(e){m.textContent=(e&&e.code==='auth/invalid-credential')||(e&&e.code==='auth/wrong-password')?'كلمة السر الحالية غلط ❌':'حصل خطأ، جرب تاني'}
+};
 $('attbtn').onclick=()=>{$('dir').classList.remove('show');renderAtt();$('att').classList.add('show');sfx.next()};
 $('attclose').onclick=()=>$('att').classList.remove('show');
 $('adate').onchange=()=>{attDate=$('adate').value||todayStr();renderAtt()};
@@ -962,7 +1025,7 @@ render();
 </script>
 <script type="module">
 import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
-import {getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getAuth,signInWithEmailAndPassword,onAuthStateChanged,signOut,reauthenticateWithCredential,EmailAuthProvider,updatePassword} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
 import {getFirestore,doc,setDoc,onSnapshot} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 const app=initializeApp({apiKey:"AIzaSyDIto97aye2oVfFUHezL_sqE5k_1P3ys2c",authDomain:"sunday-school-karas.firebaseapp.com",projectId:"sunday-school-karas",storageBucket:"sunday-school-karas.firebasestorage.app",messagingSenderId:"315344566219",appId:"1:315344566219:web:b86b5ec94bfacef102a84e"});
 const auth=getAuth(app),db=getFirestore(app);
@@ -1007,6 +1070,7 @@ el('lform').onsubmit=async e=>{
   catch(err){el('lmsg').textContent=(err.code==='auth/network-request-failed')?'مفيش نت 📶':'كلمة السر غلط ❌'}
   b.disabled=false;
 };
+window.__chpw=async(o,n)=>{const u=auth.currentUser;if(!u)throw {code:'x'};await reauthenticateWithCredential(u,EmailAuthProvider.credential(EMAIL,o));await updatePassword(u,n)};
 el('lout').onclick=()=>signOut(auth);
 </script>
 
