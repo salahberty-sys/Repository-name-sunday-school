@@ -187,6 +187,7 @@ header,#segs,#race,#board{position:relative;z-index:1}
   <span id="count" class="tool"></span>
   <div class="tools">
     <button class="tool" id="parbtn">📋 الفقرات</button>
+    <button class="tool" id="pweek">🔄 أسبوع جديد</button>
     <button class="tool" id="dirbtn">📇 الأطفال</button>
     <button class="tool" id="bdbtn">🎂 أعياد الميلاد</button>
     <button class="tool" id="attbtn">📅 الغياب</button>
@@ -212,6 +213,8 @@ header,#segs,#race,#board{position:relative;z-index:1}
   <h2 style="margin-top:0">الأسماء الموجودة النهاردة</h2>
   <textarea id="names" rows="4" placeholder="اكتب الأسماء وبينهم فاصلة أو سطر جديد"></textarea>
   <div class="row"><button class="tool go" id="addn">إضافة الأسماء</button><span id="cnt"></span></div>
+  <div class="row"><button class="tool go" id="fromdir">📇 إضافة من بيانات الأطفال</button></div>
+  <div id="dirpick"></div>
   <div id="kidlist"></div>
   <h2>فقرات اليوم</h2>
   <div id="seglist"></div>
@@ -235,7 +238,6 @@ header,#segs,#race,#board{position:relative;z-index:1}
   <div class="dh"><h2 style="flex:1">📋 الفقرات</h2><button class="tool" id="parclose">رجوع</button></div>
   <div class="ptabs"><button class="tool on" id="ptg">📘 فقرة عامة</button><button class="tool" id="ptr">⛪ فقرة طقسية</button></div>
   <div class="row" style="margin:0"><input id="pnew" placeholder="فقرة جديدة" style="flex:1"><button class="tool go" id="padd">إضافة</button></div>
-  <div class="row" style="margin:0"><button class="tool" id="pweek">🔄 أسبوع جديد (يمسح العلامات)</button></div>
   <div id="plist" style="padding-bottom:20px"></div>
   <div class="dnote">كل فقرة تقدر تعلّمها خلصت، تعدّلها أو تمسحها. بتتحفظ وتظهر عند كل المدرسين 🔒</div>
 </section>
@@ -920,6 +922,22 @@ $('pwg').onclick=async()=>{
   try{await window.__chpw(o,n);$('pwo').value='';$('pwn').value='';m.textContent='✅ اتغيرت. استخدم الجديدة من الأجهزة التانية';}
   catch(e){m.textContent=(e&&e.code==='auth/invalid-credential')||(e&&e.code==='auth/wrong-password')?'كلمة السر الحالية غلط ❌':'حصل خطأ، جرب تاني'}
 };
+function renderPick(){
+  const box=$('dirpick');box.innerHTML='';
+  const miss=D.filter(k=>!S.kids.some(x=>x.n===k.n));
+  const h=document.createElement('div');h.style.cssText='font-size:14px;margin:6px 0;opacity:.85';
+  if(!D.length){h.textContent='مفيش بيانات أطفال لسه. استورد ملف الإكسل من زرار 📇 الأطفال الأول.';box.appendChild(h);return}
+  if(!miss.length){h.textContent='كل الأطفال اللي في البيانات مضافين بالفعل ✅';box.appendChild(h);return}
+  h.textContent='اضغط على اسم عشان تضيفه، أو أضف الكل ('+miss.length+'):';box.appendChild(h);
+  const all=document.createElement('button');all.className='tool go';all.textContent='➕ إضافة الكل';
+  all.onclick=()=>{miss.forEach(k=>S.kids.push({id:uid(),n:k.n,p:0}));save();renderSetup();render();renderPick();toast('اتضاف '+miss.length+' طفل 🙌')};
+  box.appendChild(all);
+  const w=document.createElement('div');w.style.cssText='margin-top:8px';
+  miss.forEach(k=>{const b=document.createElement('button');b.className='chip';b.style.cssText='border:0;cursor:pointer;margin:3px';b.textContent='➕ '+k.n;
+    b.onclick=()=>{if(!S.kids.some(x=>x.n===k.n))S.kids.push({id:uid(),n:k.n,p:0});save();renderSetup();render();renderPick();sfx.tick()};w.appendChild(b)});
+  box.appendChild(w);
+}
+$('fromdir').onclick=renderPick;
 $('attbtn').onclick=()=>{$('dir').classList.remove('show');renderAtt();$('att').classList.add('show');sfx.next()};
 $('attclose').onclick=()=>$('att').classList.remove('show');
 $('adate').onchange=()=>{attDate=$('adate').value||todayStr();renderAtt()};
